@@ -1,0 +1,54 @@
+#include <Servo.h> // include the Servo library
+
+// define constants for the pins
+const int pitchPin = A0; // pin for pitch input
+const int rollPin = A1;  // pin for roll input
+const int yawPin = A2;   // pin for yaw input
+const int throttlePin = A3; // pin for throttle input
+const int motorPin1 = 3;   // pin for motor 1
+const int motorPin2 = 4;   // pin for motor 2
+const int motorPin3 = 5;   // pin for motor 3
+const int motorPin4 = 6;   // pin for motor 4
+
+// create Servo objects for the motors
+Servo motor1;
+Servo motor2;
+Servo motor3;
+Servo motor4;
+
+void setup() {
+  // attach the Servo objects to the motor pins
+  motor1.attach(motorPin1);
+  motor2.attach(motorPin2);
+  motor3.attach(motorPin3);
+  motor4.attach(motorPin4);
+
+  // set all input pins as inputs
+  pinMode(pitchPin, INPUT);
+  pinMode(rollPin, INPUT);
+  pinMode(yawPin, INPUT);
+  pinMode(throttlePin, INPUT);
+}
+
+void loop() {
+  // read input values from the pins
+  int pitch = map(analogRead(pitchPin), 0, 1023, -45, 45);
+  int roll = map(analogRead(rollPin), 0, 1023, -45, 45);
+  int yaw = map(analogRead(yawPin), 0, 1023, -45, 45);
+  int throttle = map(analogRead(throttlePin), 0, 1023, 0, 180);
+
+  // calculate the values for the motors
+  int motor1Val = constrain(throttle + pitch + yaw, 0, 180);
+  int motor2Val = constrain(throttle - pitch + yaw, 0, 180);
+  int motor3Val = constrain(throttle + roll - yaw, 0, 180);
+  int motor4Val = constrain(throttle - roll - yaw, 0, 180);
+
+  // set the motor speeds
+  motor1.write(motor1Val);
+  motor2.write(motor2Val);
+  motor3.write(motor3Val);
+  motor4.write(motor4Val);
+
+  // delay for a short time
+  delay(10);
+}
